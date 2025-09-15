@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "./generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // accountings Accounting[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  price     Int
+  img       String
+  desc      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// "prisma:migrate": "npm prisma migrate dev --name init"
+// model Accounting {
+//   id      String @id @default(cuid())
+//   date    String
+//   time    String
+//   name    String
+//   balance Int
+//   userId  String
+//   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
