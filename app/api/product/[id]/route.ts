@@ -82,8 +82,8 @@ export const PATCH = async (request: NextRequest) => {
       .upload(newImg, img, { cacheControl: "3600", upsert: true });
     if (error) throw error;
     // publicURL
-    const { data } = supabase.storage.from("img").getPublicUrl(newImg);
-    imgUrl = data.publicUrl;
+    const publicUrlRes = supabase.storage.from("img").getPublicUrl(newImg);
+    imgUrl = publicUrlRes.data.publicUrl;
   }
   // executed
   await prisma.product.update({
@@ -121,9 +121,7 @@ export const DELETE = async (request: NextRequest) => {
   if (productId.img) {
     const supabase = await createClient();
     const fileName = productId.img.split("/").pop() || "";
-    const { data, error } = await supabase.storage
-      .from("img")
-      .remove([fileName]);
+    const { error } = await supabase.storage.from("img").remove([fileName]);
     if (error) {
       return NextResponse.json({ errors: error }, { status: 404 });
     }

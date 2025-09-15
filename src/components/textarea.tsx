@@ -2,28 +2,30 @@ import React, {
   ChangeEvent,
   Dispatch,
   FC,
-  InputHTMLAttributes,
   SetStateAction,
   TextareaHTMLAttributes,
 } from "react";
 
-interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+// Generic TextArea
+interface TextAreaProps<T> extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   title: string;
-  htmlId: string;
+  htmlId: keyof T & string; // hanya bisa id yang ada di T
   className?: string;
-  req: any;
-  setReq: Dispatch<SetStateAction<any>>;
+  req: T;
+  setReq: Dispatch<SetStateAction<T>>;
 }
 
-const TextArea: FC<TextAreaProps> = (props) => {
+const TextArea = <T,>(props: TextAreaProps<T>) => {
   const { title, htmlId, className, req, setReq, ...rest } = props;
+
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    setReq(() => ({
-      ...req,
+    setReq((prev) => ({
+      ...prev,
       [id]: value,
     }));
   };
+
   return (
     <div className="mb-2">
       <label htmlFor={htmlId} className="block text-xl mb-2">
@@ -31,11 +33,10 @@ const TextArea: FC<TextAreaProps> = (props) => {
       </label>
       <textarea
         id={htmlId}
-        placeholder="ex : further information"
-        rows={5}
         className={`w-full p-2 rounded text-sm border ps-3 ${className}`}
-        value={req[htmlId]}
+        value={req[htmlId] as unknown as string}
         onChange={handleChange}
+        rows={7}
         {...rest}
       />
     </div>

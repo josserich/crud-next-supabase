@@ -1,6 +1,5 @@
 import prisma from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/supabase/server";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();

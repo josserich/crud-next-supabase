@@ -50,8 +50,8 @@ export async function POST(request: NextRequest) {
       .from("img")
       .upload(imgName, imgFile, { cacheControl: "3600", upsert: true });
     if (error) throw error;
-    const { data } = supabase.storage.from("img").getPublicUrl(imgName);
-    imgUrl = data.publicUrl;
+    const publicUrlRes = supabase.storage.from("img").getPublicUrl(imgName);
+    imgUrl = publicUrlRes.data.publicUrl;
   }
   await prisma.product.create({
     data: { name, price, img: imgUrl, desc },

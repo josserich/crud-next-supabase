@@ -2,7 +2,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  img: any;
+  img: string;
   desc: string;
 }
 export interface ProductCreate {
@@ -18,11 +18,4 @@ export interface ProductUpdate {
   img?: File | null;
   desc: string;
   removeImg: boolean;
-}
-export interface ProductDelete {
-  id: string;
-  name: string;
-  price: number;
-  img: any;
-  desc: string;
 }

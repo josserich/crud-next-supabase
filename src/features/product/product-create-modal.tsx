@@ -9,6 +9,7 @@ import productAPI from "@/src/services/product";
 import Swal from "sweetalert2";
 import { useAuth } from "@/src/contextts/context-auth";
 import { ProductCreate } from "@/src/interface/Product";
+import { APIErrorResponse, AxiosError } from "@/src/interface/api";
 
 const ProductCreateModal = () => {
   const { authorizeErr, setAuthorizeErr } = useAuth();
@@ -34,13 +35,16 @@ const ProductCreateModal = () => {
         icon: "success",
       });
       window.location.reload();
-    } catch (err: any) {
-      const errors = err.response?.data;
+    } catch (err: unknown) {
+      const error = err as AxiosError<APIErrorResponse>;
+      const errors = error.response?.data;
       if (errors?.authorization) {
-        const text = errors.authorization;
-        setAuthorizeErr(text);
+        setAuthorizeErr(errors.authorization);
       }
-      setMsgErr(errors?.errors);
+      if (errors?.errors) {
+        setMsgErr(errors.errors);
+      }
+      console.error("Submit error:", error);
       throw err;
     } finally {
       setLoading(false);

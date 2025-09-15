@@ -1,4 +1,4 @@
-function appendFormData(fd: FormData, key: string, value: any) {
+function appendFormData(fd: FormData, key: string, value: unknown) {
   if (value instanceof File) {
     fd.append(key, value);
   } else {

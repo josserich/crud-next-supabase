@@ -2,95 +2,94 @@ import { getImageBase64, validateExt } from "@/src/utils/img";
 import React, {
   ChangeEvent,
   Dispatch,
-  FC,
   InputHTMLAttributes,
   SetStateAction,
   useRef,
   useState,
 } from "react";
 
-interface InputImgProps extends InputHTMLAttributes<HTMLInputElement> {
+// Ambil key dari T yang tipenya File | string | null
+type KeyOfImage<T> = {
+  [K in keyof T]: T[K] extends File | string | null | undefined ? K : never;
+}[keyof T];
+
+interface InputImgProps<T> extends InputHTMLAttributes<HTMLInputElement> {
   title: string;
-  htmlId: string;
+  htmlId: KeyOfImage<T>;
   className?: string;
-  req: any;
-  setReq: Dispatch<SetStateAction<any>>;
+  req: T;
+  setReq: Dispatch<SetStateAction<T>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-const InputImg: FC<InputImgProps> = (props) => {
+const InputImg = <T,>(props: InputImgProps<T>) => {
   const { req, setReq, title, htmlId, className, setLoading, ...rest } = props;
   const [blob, setBlob] = useState<string>("");
-  // const [imgLoaded, setImgLoaded] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     try {
-      const { id, files } = e.target;
+      const { files } = e.target;
       if (!files) return;
-      const validated = validateExt(files[0]);
+      const file = files[0];
+      const validated = validateExt(file);
       if (validated) {
-        const imgBase64 = await getImageBase64(files[0]);
+        const imgBase64 = await getImageBase64(file);
         setBlob(imgBase64);
       }
-      setReq(() => ({
-        ...req,
-        [id]: files[0],
+      setReq((prev) => ({
+        ...prev,
+        [htmlId]: file as T[typeof htmlId], // simpan File ke state
       }));
-    } catch (error) {
-      throw error;
     } finally {
       setLoading(false);
     }
   };
-  const inputRef = useRef<HTMLInputElement>(null);
+
   const cancelImg = () => {
     setBlob("");
-    req.removeImg = true;
-    setReq(() => ({
-      ...req,
-      [htmlId]: "",
+    setReq((prev) => ({
+      ...prev,
+      [htmlId]: null as T[typeof htmlId], // reset jadi null
     }));
     if (inputRef.current) {
       inputRef.current.value = "";
     }
   };
-  const src = blob || (req[htmlId] ? req[htmlId] : "");
+
+  const src =
+    blob || (typeof req[htmlId] === "string" ? (req[htmlId] as string) : "");
+
   return (
     <div className="mb-2">
-      <label htmlFor={htmlId} className="block text-xl mb-2">
+      <label htmlFor={String(htmlId)} className="block text-xl mb-2">
         {title}
       </label>
-      {/* created */}
+
+      {/* preview img */}
       {src && (
         <div className="relative">
-          {/* btn cancel */}
           <div
             className="bg-red-600 text-white h-[35px] w-[35px] rounded-full flex justify-center items-center absolute right-[-10px] top-[-10px] cursor-pointer"
             onClick={cancelImg}
           >
             <div className="text-xl">x</div>
           </div>
-          {/* placeholder skeleton */}
-          {/* {!imgLoaded && (
-            <div className="animate-pulse bg-gray-200 w-full h-48 rounded my-2" />
-          )} */}
-          {/* img */}
           <img
             src={src}
             alt="preview-img"
-            className={`w-full h-auto my-2`}
-            onLoad={() => {
-              // setImgLoaded(true);
-              setLoading(false);
-            }}
+            className="w-full h-auto my-2"
+            onLoad={() => setLoading(false)}
           />
         </div>
       )}
+
       <input
         type="file"
         ref={inputRef}
-        className={`w-full p-2 rounded text-sm border ps-3 ${className}`}
-        id={htmlId}
+        className={`w-full p-2 rounded text-sm border ps-3 ${className ?? ""}`}
+        id={String(htmlId)}
         onChange={handleChange}
         {...rest}
       />

@@ -1,4 +1,5 @@
 import { useAuth } from "@/src/contextts/context-auth";
+import { APIErrorResponse, AxiosError } from "@/src/interface/api";
 import productAPI from "@/src/services/product";
 import React, { FC, FormEvent, MouseEvent, useRef, useState } from "react";
 import { FaCheck, FaExclamationTriangle, FaTimes } from "react-icons/fa";
@@ -30,12 +31,13 @@ const ProductDeleteModal: FC<ProductDeleteProps> = (props) => {
         icon: "success",
       });
       window.location.reload();
-    } catch (err: any) {
-      const errors = err.response?.data;
+    } catch (err: unknown) {
+      const error = err as AxiosError<APIErrorResponse>;
+      const errors = error.response?.data;
       if (errors?.authorization) {
-        const text = errors.authorization;
-        setAuthorizeErr(text);
+        setAuthorizeErr(errors.authorization);
       }
+      console.error("Submit error:", error);
       throw err;
     } finally {
       setLoading(false);

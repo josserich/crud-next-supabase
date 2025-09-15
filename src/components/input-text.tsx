@@ -6,33 +6,40 @@ import React, {
   SetStateAction,
 } from "react";
 
-interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
+type KeyOfText<T> = {
+  [K in keyof T]: T[K] extends string | number ? K : never;
+}[keyof T];
+
+interface InputTextProps<T> extends InputHTMLAttributes<HTMLInputElement> {
   title: string;
-  htmlId: string;
+  htmlId: KeyOfText<T>;
   className?: string;
-  req: any;
-  setReq: Dispatch<SetStateAction<any>>;
+  req: T;
+  setReq: Dispatch<SetStateAction<T>>;
 }
-const InputText: FC<InputTextProps> = (props) => {
+
+const InputText = <T,>(props: InputTextProps<T>) => {
   const { title, htmlId, className, req, setReq, ...rest } = props;
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setReq(() => ({
-      ...req,
-      [id]: value,
+    setReq((prev) => ({
+      ...prev,
+      [id]: value as T[typeof htmlId],
     }));
   };
+
   return (
     <div className="mb-2">
-      <label htmlFor={htmlId} className="block text-xl mb-2">
+      <label htmlFor={String(htmlId)} className="block text-xl mb-2">
         {title}
       </label>
       <input
         type="text"
-        id={htmlId}
-        className={`w-full p-2 rounded text-sm border ps-3 ${className}`}
+        id={String(htmlId)}
+        className={`w-full p-2 rounded text-sm border ps-3 ${className ?? ""}`}
         onChange={handleChange}
-        value={req[htmlId]}
+        value={req[htmlId] as string | number | undefined}
         {...rest}
       />
     </div>

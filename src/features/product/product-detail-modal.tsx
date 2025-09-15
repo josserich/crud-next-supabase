@@ -2,7 +2,7 @@
 import { Product } from "@/src/interface/Product";
 import productAPI from "@/src/services/product";
 import { formatCurrency3 } from "@/src/utils/format-currency";
-import React, { FC, MouseEvent, useEffect, useRef, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import { IoEyeSharp } from "react-icons/io5";
 
 interface ProductDetailProps {
@@ -21,7 +21,7 @@ const ProductDetailModal: FC<ProductDetailProps> = (props) => {
     img: "",
     desc: "",
   });
-  const openModal = async (e: MouseEvent<HTMLButtonElement>) => {
+  const openModal = async () => {
     setLoading(true);
     try {
       const res = await productAPI.getProductId(productId);

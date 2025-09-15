@@ -1,18 +1,22 @@
 // debounce dengan Promise / async
-const debounce = <T extends (...args: any[]) => any>(func: T, wait: number) => {
+const debounce = <T extends (...args: unknown[]) => unknown>(
+  func: T,
+  wait: number
+) => {
   let timeout: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
-    return new Promise<ReturnType<T>>((resolve) => {
+
+  return (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
+    return new Promise((resolve) => {
       if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        const result = func(...args);
+      timeout = setTimeout(async () => {
+        const result = (await func(...args)) as Awaited<ReturnType<T>>;
         resolve(result);
       }, wait);
     });
   };
 };
-// const debouncedSearch = debounce(fetchSearch, 500);
-// const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
-//   const result = await debouncedSearch(e.target.value);
-//   console.log("Result:", result);
-// };
+
+// const fetchUser = async (id: number) => ({ id, name: "Josse" });
+// const debouncedFetch = debounce(fetchUser, 300);
+
+// debouncedFetch(1).then((res) => console.log(res)); // { id: 1, name: "Josse" }

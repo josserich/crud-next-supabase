@@ -1,5 +1,5 @@
 import { supabase } from "@/supabase/client";
-
+import { Session } from "@supabase/supabase-js";
 const signIn = async () => {
   await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -12,9 +12,14 @@ const signOut = async () => {
   await supabase.auth.signOut();
 };
 const getAuthentication = async () => {
-  const session: any = await supabase.auth.getSession();
-  const { avatar_url, email, full_name } =
-    session.data.session.user.user_metadata;
+  const { data } = await supabase.auth.getSession();
+  const session: Session | null = data.session;
+  if (!session) return null;
+  const { avatar_url, email, full_name } = session.user.user_metadata as {
+    avatar_url: string;
+    email: string;
+    full_name: string;
+  };
   return { avatar_url, email, full_name };
 };
 const getAuthorization = async () => {

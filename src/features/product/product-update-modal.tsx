@@ -4,6 +4,7 @@ import InputImg from "@/src/components/input-img";
 import InputText from "@/src/components/input-text";
 import TextArea from "@/src/components/textarea";
 import { useAuth } from "@/src/contextts/context-auth";
+import { APIErrorResponse, AxiosError } from "@/src/interface/api";
 import { Product, ProductUpdate } from "@/src/interface/Product";
 import productAPI from "@/src/services/product";
 import React, {
@@ -41,8 +42,16 @@ const ProductUpdateModal: FC<ProductUpdateProps> = (props) => {
     try {
       const res = await productAPI.getProductId(productId);
       setReq(res);
-    } catch (err: any) {
-      console.log(err);
+    } catch (err: unknown) {
+      const error = err as AxiosError<APIErrorResponse>;
+      const errors = error.response?.data;
+      if (errors?.authorization) {
+        setAuthorizeErr(errors.authorization);
+      }
+      if (errors?.errors) {
+        setMsgErr(errors.errors);
+      }
+      console.error("Submit error:", error);
       throw err;
     } finally {
       setLoading(false);
@@ -62,13 +71,15 @@ const ProductUpdateModal: FC<ProductUpdateProps> = (props) => {
         icon: "success",
       });
       window.location.reload();
-    } catch (err: any) {
-      const errors = err.response?.data;
+    } catch (err: unknown) {
+      const error = err as AxiosError<APIErrorResponse>;
+      const errors = error.response?.data;
       if (errors?.authorization) {
-        const text = errors.authorization;
-        setAuthorizeErr(text);
+        setAuthorizeErr(errors.authorization);
       }
-      setMsgErr(errors?.errors);
+      if (errors?.errors) {
+        setMsgErr(errors.errors);
+      }
       throw err;
     } finally {
       setLoading(false);
