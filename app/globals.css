@@ -1,16 +1,2 @@
 @import "tailwindcss";
 @plugin "daisyui";
-
-@font-face {
-  font-family: "poppins";
-  src: url("/font/montserrat-bold.ttf");
-}
-* {
-  font-family: "poppins" !important;
-  scroll-behavior: smooth;
-}
-
-body .swal-overlay,
-body .swal-modal {
-  z-index: 10000 !important;
-}
