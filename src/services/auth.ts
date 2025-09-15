@@ -4,7 +4,7 @@ const signIn = async () => {
   await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `https://crud-next-supabase-lilac.vercel.app/auth/callback`,
+      redirectTo: "https://crud-next-supabase-lilac.vercel.app/auth/callback",
     },
   });
 };
