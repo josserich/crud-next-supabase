@@ -9,9 +9,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "CRUD + AUTH",
+  title: "crud-auth-complete-nextjs",
   description:
-    "Tutorial CRUD product + AUTH google provider with fullstack nextjs and supabase as backend services",
+    "Tutorial CRUD product + AUTH google provider with fullstack nextjs and supabase as backend services by Josse Surya Pinem",
 };
 
 export default function RootLayout({
