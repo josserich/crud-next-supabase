@@ -2,7 +2,6 @@ import { formatCurrency, unFormatCurrency } from "@/src/utils/format-currency";
 import React, {
   ChangeEvent,
   Dispatch,
-  FC,
   InputHTMLAttributes,
   SetStateAction,
   useEffect,

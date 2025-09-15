@@ -1,18 +1,23 @@
 const formatCurrency = (num: string | number): string => {
-  if (!num) return "";
-  const str = num.toString().replace(/[^0-9,]/g, ""); // hapus karakter selain angka dan koma
+  if (num === null || num === undefined || num === "") return "";
+
+  const str = num.toString().replace(/[^0-9,]/g, "");
   const split = str.split(",");
-  let integerPart = split[0].replace(/^0+(?!$)/, "");
+
+  const integerPart = split[0].replace(/^0+(?!$)/, "");
   const remain = integerPart.length % 3;
-  let currency = integerPart.substring(0, remain);
+
+  const head = integerPart.substring(0, remain);
   const thousands = integerPart.substring(remain).match(/\d{3}/gi);
-  if (thousands) {
-    const separator = remain ? "." : "";
-    currency += separator + thousands.join(".");
-  }
-  currency = split[1] !== undefined ? currency + "," + split[1] : currency;
-  return currency ? "$ " + currency : "";
+
+  const body = thousands ? (remain ? "." : "") + thousands.join(".") : "";
+  const decimal = split[1] !== undefined ? `,${split[1]}` : "";
+
+  const currency = head + body + decimal;
+
+  return currency ? `$ ${currency}` : "";
 };
+
 const formatCurrency1 = (input: number) => {
   const formattedValue = new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -21,18 +26,15 @@ const formatCurrency1 = (input: number) => {
   return formattedValue;
 };
 const formatCurrency2 = (input: number) => {
-  let priceTxt = ``;
   if (input === 0) {
-    priceTxt = `${formatCurrency1(input)}`;
+    return formatCurrency1(0);
   }
   if (input < 0) {
-    priceTxt = `- ${formatCurrency1(Math.abs(input))}`;
+    return `- ${formatCurrency1(Math.abs(input))}`;
   }
-  if (input > 0) {
-    priceTxt = `+ ${formatCurrency1(input)}`;
-  }
-  return priceTxt;
+  return `+ ${formatCurrency1(input)}`;
 };
+
 const formatCurrency3 = (input: number) => {
   const formatted = new Intl.NumberFormat("en-US", {
     style: "currency",

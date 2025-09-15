@@ -1,7 +1,6 @@
 import React, {
   ChangeEvent,
   Dispatch,
-  FC,
   SetStateAction,
   TextareaHTMLAttributes,
 } from "react";
