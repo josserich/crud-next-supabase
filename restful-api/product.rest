@@ -1,4 +1,5 @@
 GET http://localhost:3000/api/product
+Authorization: Bearer secret,
 Content-Type: application/json
 
 ###
@@ -7,6 +8,7 @@ Content-Type: application/json
 
 ### 
 PATCH http://localhost:3000/api/product/cmfavzmea0002l69kwbx7c291
+Authorization: Bearer secret,
 Content-Type: multipart/form-data
 
 {
@@ -19,4 +21,5 @@ Content-Type: multipart/form-data
 
 ###
 DELETE http://localhost:3000/api/product/cmfavzmea0002l69kwbx7c291
+Authorization: Bearer secret,
 Content-Type: application/json

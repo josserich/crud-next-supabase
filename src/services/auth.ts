@@ -3,9 +3,9 @@ import { Session } from "@supabase/supabase-js";
 const signIn = async () => {
   await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: {
-      redirectTo: `https://crud-next-supabase-lilac.vercel.app/auth/callback`,
-    },
+    // options: {
+    //   redirectTo: `https://crud-next-supabase-lilac.vercel.app/auth/callback`,
+    // },
   });
 };
 const signOut = async () => {
