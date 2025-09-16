@@ -10,4 +10,7 @@ module.exports = {
     },
   },
   plugins: [require("daisyui")],
+  daisyui: {
+    themes: ["light"], // paksa hanya light theme
+  },
 };
